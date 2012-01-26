@@ -22,31 +22,36 @@ public class Fichier {
 		
 	}
 
-	public ArrayList<Point> recupererFichier() throws IOException{
+	public ArrayList<ArrayList<Point>> recupererFichier() throws IOException{
 
 			FileReader f = new FileReader(this.nom);
 			BufferedReader b = new BufferedReader(f);
 			String line=b.readLine();
 			String[] decompose;
-			ArrayList<Point> tabDon=new ArrayList<Point>();
+			ArrayList<ArrayList<Point>> tabDonGlobal=new ArrayList<ArrayList<Point>>();
 			int i=0;
-			int j=0;
+			
 			while(line !=null){
 				decompose = line.split("	");
+				for (int j=0; j<decompose.length -1;j++){
+					ArrayList<Point>A = new ArrayList<Point>();
+					tabDonGlobal.add(A);
+				}
+				 
 				
-				for (i=0;i<decompose.length;i++){
+				for (i=1;i<decompose.length;i++){
 					//System.out.println(decompose[i]);
 					double d=Double.parseDouble(decompose[i]);
-					Point P=new Point(i,j);
-					P.valeur=d;
-					tabDon.add(P);
+					Point P=new Point(Double.parseDouble(decompose[0]),d);
+					
+					tabDonGlobal.get(i-1).add(P);
 				}
 				
 				line=b.readLine();
-				j++;
+				
 			}
 			
-			return tabDon;	
+			return tabDonGlobal;	
 	}
 
 

@@ -6,6 +6,12 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import javax.swing.JPanel;
+import org.jfree.chart.*;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.data.category.DefaultCategoryDataset;
+import org.jfree.data.general.DefaultPieDataset;
+import org.jfree.data.xy.*;
+import org.jfree.data.*;
 
 
 public class kmeans extends JPanel {
@@ -18,7 +24,7 @@ public class kmeans extends JPanel {
 
 	public static void algoKmeans(Fichier NotreFichier, int k, int nbVar) throws IOException{
 		
-		ArrayList<Point> Donnees=new ArrayList<Point>();
+		ArrayList<ArrayList<Point>> Donnees=new ArrayList<ArrayList<Point>>();
 		Donnees=NotreFichier.recupererFichier();
 		
 		//Initialisation
@@ -46,11 +52,7 @@ public class kmeans extends JPanel {
 
 	}
 
-	public static void afficherKmeans(ArrayList<ArrayList<Point>> Global){
-		 
-		Graphics2D g2d = (Graphics2D)g;
-		XYPlot A = new XYPlot();
-	}
+	
 	
 	//Methode qui place aleatoirement le barycentre de chaque cluster pour l'initialisation
 		public static ArrayList<ArrayList<Point>> choixHasardCluster(ArrayList<Point> Donnees, int k){
