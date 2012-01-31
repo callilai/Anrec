@@ -1,6 +1,7 @@
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Random;
+
+import javax.swing.JFrame;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartFrame;
@@ -31,12 +32,40 @@ public class Test {
 
 
 	}
-	
+	public static void afficherKmeans2(kmeans kms, String s){
+
+		ArrayList<XYSeries> GlobalSeries = new ArrayList<XYSeries>();
+
+		for (int m=0; m<kms.Global.size();m++){
+			XYSeries series = new XYSeries(m);
+			GlobalSeries.add(series);
+		}
+
+		for(int j=0; j<kms.Global.size();j++){
+			for(int i=0; i<kms.Global.get(j).getListPoints().size();i++){
+				GlobalSeries.get(j).add(kms.Global.get(j).getListPoints().get(i).getX(),kms.Global.get(j).getListPoints().get(i).getY());	
+			}
+		}
+
+		XYSeriesCollection Dataset = new XYSeriesCollection();
+		for(int j=0; j<GlobalSeries.size();j++){
+			Dataset.addSeries(GlobalSeries.get(j));
+		}
+
+		org.jfree.chart.JFreeChart chart = ChartFactory.createScatterPlot(s, "X", "Y", Dataset,PlotOrientation.VERTICAL, false, false,false);
+		ChartFrame frame1=new ChartFrame("ANREC",chart);
+
+		frame1.setVisible(true);
+		frame1.setSize(300,300);
+		frame1.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	}
 	public static void  main (String [] args) throws IOException{
 		Fichier exemple1=new Fichier("exemple1.txt");
 		//afficherKmeans(exemple1.recupererFichier());
 		ArrayList<Cluster> A= new ArrayList<Cluster>();
 		kmeans kms=new kmeans(A,2,2);
 		kms.algoKmeans(exemple1);
+		afficherKmeans2(kms,"algokmeans");
+		
 	}
 }

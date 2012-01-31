@@ -1,20 +1,13 @@
 import java.io.IOException;
 import java.util.ArrayList;
-import java.awt.Graphics;
+/*import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.util.ArrayList;
+import java.util.ArrayList;*/
 import java.util.Random;
 
-import javax.swing.JPanel;
-import org.jfree.chart.*;
-import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.data.category.DefaultCategoryDataset;
-import org.jfree.data.general.DefaultPieDataset;
-import org.jfree.data.xy.*;
-import org.jfree.data.*;
+import javax.swing.JFrame;
 
-
-public class kmeans extends JPanel {
+public class kmeans {
 	
 	protected ArrayList<Cluster> Global;
 	protected int k;
@@ -26,25 +19,6 @@ public class kmeans extends JPanel {
 		this.nbVar=nbVar;
 	}
 
-	public static void afficherKmeans(ArrayList<ArrayList<Point>> Global){
-
-
-		XYSeries series = new XYSeries("Average Weight");
-
-		for(int j=0; j<Global.get(0).size();j++){
-		series.add(Global.get(0).get(j).getX(), Global.get(0).get(j).getY());
-		}
-
-		XYSeriesCollection Dataset = new XYSeriesCollection(series);
-		//Dataset.addSeries(series);
-		  JFreeChart chart = ChartFactory.createScatterPlot("test", "X", "Y", Dataset,PlotOrientation.VERTICAL, false, false,false);
-		  ChartFrame frame1=new ChartFrame("XY Chart",chart);
-
-		  frame1.setVisible(true);
-		  frame1.setSize(300,300);
-
-
-	}
 	
 	public void algoKmeans(Fichier NotreFichier) throws IOException{
 
@@ -54,7 +28,6 @@ public class kmeans extends JPanel {
 		//Initialisation
 		
 		this.choixHasardCluster(Donnees);
-		//this.afficherKmeans2();
 		System.out.println("Test Choix Hasard Cluster");
 		String s=new String();
 		
@@ -86,35 +59,12 @@ public class kmeans extends JPanel {
 		//this.afficherKmeans2(); 
 
 	}
-
-	public void afficherKmeans2(){
-
-		ArrayList<XYSeries> GlobalSeries = new ArrayList<XYSeries>();
-
-		for (int m=0; m<Global.size();m++){
-			XYSeries series = new XYSeries(m);
-			GlobalSeries.add(series);
-		}
-
-		for(int j=0; j<Global.size();j++){
-			for(int i=0; i<Global.get(j).getListPoints().size();i++){
-				GlobalSeries.get(j).add(Global.get(j).getListPoints().get(i).getX(),Global.get(j).getListPoints().get(i).getY());	
-			}
-		}
-
-		XYSeriesCollection Dataset = new XYSeriesCollection();
-		for(int j=0; j<GlobalSeries.size();j++){
-			Dataset.addSeries(GlobalSeries.get(j));
-		}
-
-		JFreeChart chart = ChartFactory.createScatterPlot("test", "X", "Y", Dataset,PlotOrientation.VERTICAL, false, false,false);
-		ChartFrame frame1=new ChartFrame("XY Chart",chart);
-
-		frame1.setVisible(true);
-		frame1.setSize(300,300);
+	
+	/*
+        
 
 
-	}
+	}*/
 
 	//Methode qui place aleatoirement le barycentre de chaque cluster pour l'initialisation
 		public void choixHasardCluster(ArrayList<ArrayList<Point>> Donnees){
