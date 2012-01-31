@@ -7,6 +7,12 @@ import java.util.Random;
 
 import javax.swing.JFrame;
 
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartFrame;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
+
 public class kmeans {
 	
 	protected ArrayList<Cluster> Global;
@@ -19,7 +25,33 @@ public class kmeans {
 		this.nbVar=nbVar;
 	}
 
-	
+	public void afficherKmeans2(String s){
+
+		ArrayList<XYSeries> GlobalSeries = new ArrayList<XYSeries>();
+
+		for (int m=0; m<this.Global.size();m++){
+			XYSeries series = new XYSeries(m);
+			GlobalSeries.add(series);
+		}
+
+		for(int j=0; j<this.Global.size();j++){
+			for(int i=0; i<this.Global.get(j).getListPoints().size();i++){
+				GlobalSeries.get(j).add(this.Global.get(j).getListPoints().get(i).getX(),this.Global.get(j).getListPoints().get(i).getY());	
+			}
+		}
+
+		XYSeriesCollection Dataset = new XYSeriesCollection();
+		for(int j=0; j<GlobalSeries.size();j++){
+			Dataset.addSeries(GlobalSeries.get(j));
+		}
+
+		org.jfree.chart.JFreeChart chart = ChartFactory.createScatterPlot(s, "X", "Y", Dataset,PlotOrientation.VERTICAL, false, false,false);
+		ChartFrame frame1=new ChartFrame("ANREC",chart);
+
+		frame1.setVisible(true);
+		frame1.setSize(300,300);
+		frame1.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	}
 	public void algoKmeans(Fichier NotreFichier) throws IOException{
 
 		ArrayList<ArrayList<Point>> Donnees=new ArrayList<ArrayList<Point>>();
@@ -40,7 +72,7 @@ public class kmeans {
 		//Premieres reallocation et recentering
 		this.premiereReallocation(Donnees, k);
 		this.recentering();
-		//this.afficherKmeans2();
+		this.afficherKmeans2("premieres reallocation et recentering");
 		
 		this.reallocation();
 		this.recentering();
@@ -56,7 +88,7 @@ public class kmeans {
 			
 		}
 		System.out.println("sortie de boucle");
-		//this.afficherKmeans2(); 
+		this.afficherKmeans2("sortie de boucle");
 
 	}
 	
