@@ -56,7 +56,7 @@ public class Test {
 		ArrayList<Cluster> Globalancien = new ArrayList<Cluster>();
 
 		while(Global!=Globalancien){
-			Global=Globalancien;
+			Globalancien=Global;
 			Global=reallocation(Global,k);
 			Global=recentering(Global);
 			
@@ -151,11 +151,12 @@ public class Test {
 			Cluster C=new Cluster(A,G);
 			newGlobal.add(C);
 		}
-		int n=0;
+	
 		double dist = Double.MAX_VALUE;
 		double newdist = 0;  
 		for(int i=0; i<Global.size();i++){
 			for(int j=0;j<Global.get(i).getListPoints().size();j++){
+				int n=0;
 				for (int m=0;m<Global.size();m++){
 					newdist=calculDistance(Global.get(i).getListPoints().get(j),Global.get(m).getCentreGravite());
 
@@ -184,7 +185,7 @@ public class Test {
 				Global.get(i).setCentreGravite(Gnew);
 			}
 		}
-		System.out.println("Test recentring");
+		System.out.println("Test recentring"+ Global);
 		return Global;
 	}
 
