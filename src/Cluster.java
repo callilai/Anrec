@@ -25,4 +25,27 @@ public class Cluster {
 	}
 	
 
+	public void calculCentreGravite(){
+		Point G= new Point(0,0);
+		if (this.listPoints.size()!=0){
+			for (int i=0;i<this.listPoints.size();i++){
+				G.x+=this.listPoints.get(i).getX();
+				G.y+=this.listPoints.get(i).getY();
+			}
+			G.x=G.x/this.listPoints.size();
+			G.y=G.y/this.listPoints.size();
+		}
+		
+		this.centreGravite=G;
+
+	}
+	@Override
+	public String toString() {
+		return "Cluster [listPoints=" + listPoints + ", centreGravite="
+				+ centreGravite + "]";
+	}
+	
+	
+
+
 }

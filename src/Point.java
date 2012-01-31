@@ -26,5 +26,17 @@ public class Point {
 	}
 
 
+	public double calculDistance(Point B){
+		double d=Math.sqrt(Math.pow(this.getX()-B.getX(),2)+Math.pow((this.getY()-B.getY()),2));
+		return d;		
+	}
+	
+	public boolean mesureSimilarite(double Precision, Point B){
+		boolean a=false;
+		if (this.calculDistance(B)<Precision)
+		{a =true;}		
+		return a;
+	}
+
 
 }

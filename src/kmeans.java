@@ -15,11 +15,15 @@ import org.jfree.data.*;
 
 
 public class kmeans extends JPanel {
-
-	public static void main(String[] args){
-
-
-
+	
+	protected ArrayList<Cluster> Global;
+	protected int k;
+	protected int nbVar;
+	
+	public kmeans(ArrayList<Cluster> G, int k, int nbVar){
+		this.Global=G;
+		this.k=k;
+		this.nbVar=nbVar;
 	}
 
 	public static void afficherKmeans(ArrayList<ArrayList<Point>> Global){
@@ -42,44 +46,48 @@ public class kmeans extends JPanel {
 
 	}
 	
-	public static void algoKmeans(Fichier NotreFichier, int k, int nbVar) throws IOException{
+	public void algoKmeans(Fichier NotreFichier) throws IOException{
 
 		ArrayList<ArrayList<Point>> Donnees=new ArrayList<ArrayList<Point>>();
 		Donnees=NotreFichier.recupererFichier();
 
 		//Initialisation
-		ArrayList<ArrayList<Point>> Global = new ArrayList<ArrayList<Point>>();
-		Global=choixHasardCluster(Donnees,k);
-		afficherKmeans2(Global);
-
+		
+		this.choixHasardCluster(Donnees);
+		//this.afficherKmeans2();
+		System.out.println("Test Choix Hasard Cluster");
+		String s=new String();
+		
+		for (int i=0; i<this.Global.size();i++){
+			s=this.Global.get(i).toString();
+			System.out.println(s);
+		}
 		//Reallocation & Recentering
 
 		//Premieres reallocation et recentering
-		Global=premiereReallocation(Global,Donnees, k);
-		Global=recentering(Global);
-		afficherKmeans2(Global);
+		this.premiereReallocation(Donnees, k);
+		this.recentering();
+		//this.afficherKmeans2();
 		
-		Global=reallocation(Global,k);
-		Global=recentering(Global);
-		afficherKmeans2(Global);
+		this.reallocation();
+		this.recentering();
+		//this.afficherKmeans2();
 
 		//Répétition jusqu'à stabilisation
-		ArrayList<ArrayList<Point>> Globalancien = new ArrayList<ArrayList<Point>>();
+		ArrayList<Cluster> Globalancien = new ArrayList<Cluster>();
 
-		while(Global!=Globalancien){
-			Global=Globalancien;
-			Global=reallocation(Global,k);
-			Global=recentering(Global);
+		while(this.Global!=Globalancien){
+			Globalancien=this.Global;
+			this.reallocation();
+			this.recentering();
+			
 		}
-
-		afficherKmeans2(Global);
+		System.out.println("sortie de boucle");
+		//this.afficherKmeans2(); 
 
 	}
 
-
-	public static void afficherKmeans2(ArrayList<ArrayList<Point>> Global){
-
-
+	public void afficherKmeans2(){
 
 		ArrayList<XYSeries> GlobalSeries = new ArrayList<XYSeries>();
 
@@ -89,8 +97,8 @@ public class kmeans extends JPanel {
 		}
 
 		for(int j=0; j<Global.size();j++){
-			for(int i=0; i<Global.get(j).size();i++){
-				GlobalSeries.get(j).add(Global.get(j).get(i).getX(),Global.get(j).get(i).getY());	
+			for(int i=0; i<Global.get(j).getListPoints().size();i++){
+				GlobalSeries.get(j).add(Global.get(j).getListPoints().get(i).getX(),Global.get(j).getListPoints().get(i).getY());	
 			}
 		}
 
@@ -108,115 +116,86 @@ public class kmeans extends JPanel {
 
 	}
 
-
-
-
 	//Methode qui place aleatoirement le barycentre de chaque cluster pour l'initialisation
-	public static ArrayList<ArrayList<Point>> choixHasardCluster(ArrayList<ArrayList<Point>> Donnees, int k){
+		public void choixHasardCluster(ArrayList<ArrayList<Point>> Donnees){
 
-		ArrayList<ArrayList<Point>> Global = new ArrayList<ArrayList<Point>>();
-		for (int j=0; j<k;j++){
-			ArrayList<Point>A = new ArrayList<Point>();
-			Global.add(A);
-		}
-		Random r = new Random();
-
-		for(int i=0;i<k;i++){	
-			Point A= Donnees.get(0).get(r.nextInt(Donnees.size())); //cas particulier où juste une serie
-			if (A.getX()!=0&&A.getY()!=0){
-				Global.get(i).add(A);
+			for (int j=0; j<this.k;j++){
+				ArrayList<Point> LP=new ArrayList<Point>();
+				Point G=new Point(0,0);
+				Cluster C=new Cluster(LP,G);
+				this.Global.add(C);
 			}
-		}
+			Random r = new Random();
 
-		return Global;
-	}
-
-	public static ArrayList<ArrayList<Point>> premiereReallocation(ArrayList<ArrayList<Point>> Global, ArrayList<ArrayList<Point>> Donnees, int k){
-
-		double dist = Double.MAX_VALUE;
-		double newdist = 0;        
-		for(int j=0; j<Donnees.get(0).size(); j++)
-		{
-			for(int i=0; i<k;i++)
-			{newdist=calculDistance(Donnees.get(0).get(j), Global.get(i).get(0));
-
-			if(newdist<=dist){dist = newdist;}
-			Global.get(i).add(Donnees.get(0).get(j));
-			} 		           
-		}
-		return Global;
-	}
-
-	public static ArrayList<ArrayList<Point>> reallocation(ArrayList<ArrayList<Point>> Global, int k){
-
-		
-		ArrayList<ArrayList<Point>> newGlobal = new ArrayList<ArrayList<Point>>();
-		for (int j=0; j<k;j++){
-			ArrayList<Point> A = new ArrayList<Point>();
-			newGlobal.add(A);
-			newGlobal.get(j).add(Global.get(j).get(0));
-			
-		}
-		
-		double dist = Double.MAX_VALUE;
-		double newdist = 0;  
-		for(int i=0; i<Global.size();i++){
-			for(int j=1;j<Global.get(i).size();j++){
-				for(int m=0; m<newGlobal.size();m++){
-
-					newdist=calculDistance(Global.get(i).get(j),newGlobal.get(m).get(0));
-
-					if(newdist<=dist){dist = newdist;}
-					newGlobal.get(m).add(Global.get(i).get(j));
+			for(int i=0;i<k;i++){	
+				Point A= Donnees.get(0).get(r.nextInt(Donnees.size())); //cas particulier où juste une serie
+				if (A.getX()!=0&&A.getY()!=0){
+					this.Global.get(i).setCentreGravite(A);
 				}
 			}
 		}
-		return newGlobal;
+
+	public void premiereReallocation(ArrayList<ArrayList<Point>> Donnees, int k){
+
+		double dist = Double.MAX_VALUE;
+		double newdist = 0;  
+		int l=0;
+		for(int j=0; j<Donnees.get(0).size(); j++)
+		{
+			for(int i=0; i<k;i++)
+				{newdist=Donnees.get(0).get(j).calculDistance(this.Global.get(i).getCentreGravite());
+
+				if(newdist<=dist){dist = newdist;l=i;}
+				this.Global.get(l).getListPoints().add(Donnees.get(0).get(j));
+				} 		           
+			}
+			System.out.println("Test premire rŽallocation"+Global);
+			
+		}
+
+	public void reallocation(){
+//nulle part on utilise k...
+		ArrayList<Cluster> newGlobal=new ArrayList<Cluster>();
+		for (int i=0;i<this.Global.size();i++){
+			ArrayList<Point> A=new ArrayList<Point>();
+			Point G=new Point(this.Global.get(i).getCentreGravite().getX(),this.Global.get(i).getCentreGravite().getY());
+			Cluster C=new Cluster(A,G);
+			newGlobal.add(C);
+		}
+	
+		double dist = Double.MAX_VALUE;
+		double newdist = 0;  
+		for(int i=0; i<this.Global.size();i++){
+			for(int j=0;j<this.Global.get(i).getListPoints().size();j++){
+				int n=0;
+				for (int m=0;m<this.Global.size();m++){
+					newdist=this.Global.get(i).getListPoints().get(j).calculDistance(this.Global.get(m).getCentreGravite());
+
+					if(newdist<=dist){dist = newdist;n=m;}
+				}
+				newGlobal.get(n).getListPoints().add(this.Global.get(i).getListPoints().get(j));
+			}
+			
+		}
+		System.out.println("Test rŽallocation");
 
 	}
 
-	public static ArrayList<ArrayList<Point>> recentering(ArrayList<ArrayList<Point>> Global){
+	public void recentering(){
 		//calcul centre gravite
 		for (int i=0;i<Global.size();i++){
 			Point Gold=new Point(0,0);
-			Point Gnew=new Point(0,0);
+			
 
-			Gold=Global.get(i).get(0);
-			Gnew=calculCentreGravite(Global.get(i));
+			Gold=this.Global.get(i).getCentreGravite();
+			this.Global.get(i).calculCentreGravite();
 
-			if(Gold!=Gnew){
-				//mettre centre gravite en premiere position
-				Global.get(i).add(0, Gnew);
+			if(Gold==this.Global.get(i).getCentreGravite()){
+				System.out.println("Centre de gravitŽ inchangŽ pour le cluster "+i);
 			}
 		}
-		return Global;
-	}
-
-	public static Point calculCentreGravite(ArrayList<Point> Liste){
-		Point G= new Point(0,0);
-		if (Liste.size()!=0){
-			for (int i=0;i< Liste.size();i++){
-				G.x+=Liste.get(i).getX();
-				G.y+=Liste.get(i).getY();
-			}
-			G.x=G.x/Liste.size();
-			G.y=G.y/Liste.size();
-		}
-
-		return G;
-
-	}
-
-	public static double calculDistance(Point A, Point B){
-		double d=Math.sqrt(Math.pow(A.getX()-B.getX(),2)+Math.pow((A.getY()-B.getY()),2));
-		return d;		
-	}
-
-	public static boolean mesureSimilarite(double Precision, Point A, Point B){
-		boolean a=false;
-		if (calculDistance(A,B)<Precision)
-		{a =true;}		
-		return a;
+		System.out.println("Test recentring");
+	
 	}
 
 }
