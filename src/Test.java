@@ -65,7 +65,6 @@ public class Test {
 		ArrayList<Cluster> A= new ArrayList<Cluster>();
 		kmeans kms=new kmeans(A,2,2);
 		kms.algoKmeans(exemple1);
-		afficherKmeans2(kms,"algokmeans");
 		
 	}
 }

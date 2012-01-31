@@ -67,17 +67,42 @@ public class kmeans {
 			s=this.Global.get(i).toString();
 			System.out.println(s);
 		}
+		
+		this.afficherKmeans2("choix clusters");
+		
 		//Reallocation & Recentering
 
 		//Premieres reallocation et recentering
 		this.premiereReallocation(Donnees, k);
+		System.out.println("Centre de gravite avant recentring"+ this.Global.get(0).getCentreGravite().getX()+" "+this.Global.get(0).getCentreGravite().getY());
 		this.recentering();
+		System.out.println("Centre de gravite après recentring"+ this.Global.get(0).getCentreGravite().getX()+" "+this.Global.get(0).getCentreGravite().getY());
 		this.afficherKmeans2("premieres reallocation et recentering");
 		
-		this.reallocation();
-		this.recentering();
-		//this.afficherKmeans2();
+		//affichage 1er cluster: 
+		
+		for (int i=0; i<10;i++){
+		System.out.println("clusterX : "+ this.Global.get(0).getListPoints().get(i).getX()+ "clusterY : "+ this.Global.get(0).getListPoints().get(i).getY());
+		}
 
+		this.reallocation();
+		
+		//affichage 1er cluster: 
+		
+		for (int i=0; i<10;i++){
+		System.out.println("clusterX : "+ this.Global.get(0).getListPoints().get(i).getX()+ "clusterY : "+ this.Global.get(0).getListPoints().get(i).getY());
+		}
+
+		this.recentering();
+		
+		//this.afficherKmeans2();
+		//affichage 1er cluster: 
+		
+				//for (int i=0; i<10;i++){
+				//System.out.println("clusterX : "+ this.Global.get(0).getListPoints().get(i).getX()+ "clusterY : "+ this.Global.get(0).getListPoints().get(i).getY());
+				//}
+				
+	
 		//RÈpÈtition jusqu'‡ stabilisation
 		ArrayList<Cluster> Globalancien = new ArrayList<Cluster>();
 
@@ -89,7 +114,7 @@ public class kmeans {
 		}
 		System.out.println("sortie de boucle");
 		this.afficherKmeans2("sortie de boucle");
-
+		
 	}
 	
 	/*
@@ -136,32 +161,36 @@ public class kmeans {
 		}
 
 	public void reallocation(){
-//nulle part on utilise k...
+
 		ArrayList<Cluster> newGlobal=new ArrayList<Cluster>();
 		for (int i=0;i<this.Global.size();i++){
 			ArrayList<Point> A=new ArrayList<Point>();
 			Point G=new Point(this.Global.get(i).getCentreGravite().getX(),this.Global.get(i).getCentreGravite().getY());
 			Cluster C=new Cluster(A,G);
 			newGlobal.add(C);
-		}
-	
-		double dist = Double.MAX_VALUE;
-		double newdist = 0;  
-		for(int i=0; i<this.Global.size();i++){
-			for(int j=0;j<this.Global.get(i).getListPoints().size();j++){
-				int n=0;
-				for (int m=0;m<this.Global.size();m++){
-					newdist=this.Global.get(i).getListPoints().get(j).calculDistance(this.Global.get(m).getCentreGravite());
-
-					if(newdist<=dist){dist = newdist;n=m;}
-				}
-				newGlobal.get(n).getListPoints().add(this.Global.get(i).getListPoints().get(j));
-			}
 			
 		}
+	
+		for (int i=0; i<this.Global.size();i++){
+			for (int j=0;j<this.Global.get(i).getListPoints().size();j++){
+				int indice=0;
+				double Dmin=this.Global.get(i).getListPoints().get(j).calculDistance(this.Global.get(i).getCentreGravite());
+				for (int l=0; l<this.Global.size();l++){
+					
+					double d=this.Global.get(i).getListPoints().get(j).calculDistance(this.Global.get(l).getCentreGravite());
+					
+							if (d<Dmin){ Dmin=d; indice=l;}
+							
+				}
+				newGlobal.get(indice).getListPoints().add(this.Global.get(i).getListPoints().get(j));
+			}}
+		
+		for (int i=0; i<this.Global.size();i++){
+			this.Global.set(i, newGlobal.get(i));
+		}
 		System.out.println("Test réallocation");
-
-	}
+		
+			}
 
 	public void recentering(){
 		//calcul centre gravite
