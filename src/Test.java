@@ -60,11 +60,31 @@ public class Test {
 		frame1.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 	public static void  main (String [] args) throws IOException{
-		Fichier exemple1=new Fichier("exemple1.txt");
-		//afficherKmeans(exemple1.recupererFichier());
+		
+		//lecture du fichier contenant les données. Le vecteur donnees est une liste contenant
+		//des listes de points. Chacune des listes de points i, représente la liste des points où: 
+		//en X: les données de la 1ere colonne du fichier
+		//en Y:les données de la colonne i+1 du fichier
+		
+		Fichier Fichier=new Fichier("exemple1.txt");
+		ArrayList<ArrayList<Point>> Donnees=new ArrayList<ArrayList<Point>>();
+		Donnees=Fichier.recupererFichier();
+		
+		//initialisation du kmeans (choix du nombre de cluster)
+		
 		ArrayList<Cluster> A= new ArrayList<Cluster>();
-		kmeans kms=new kmeans(A,2,2);
-		kms.algoKmeans(exemple1);
+		kmeans kms=new kmeans(A,2);
+		
+		//On applique l'algo kmeans pour chacune des listes de points. 
+		
+		int i=0;
+		
+		while (Donnees.get(i).size()>0){
+			kms.nbVar=i;
+			kms.algoKmeans(Donnees.get(i));
+			//kms.afficherKmeans2("résultat algokmeans pour variable n° "+(i+1));
+			i+=1;
+		}
 		
 	}
 }
